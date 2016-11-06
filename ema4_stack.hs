@@ -27,17 +27,19 @@ ema200 = ema 200
 
  
 
-incrocia (viewl -> x :< empty) _ = empty
-incrocia _ (viewl -> y :< empty) = empty
-incrocia grezzo media
-    | (x0 < y0) && (x1 > y1) = 5.0 <| incrocia (S.drop 1 grezzo) (S.drop 1 media)
-    | (x0 > y0) && (x1 < y1) = 10.0 <| incrocia (S.drop 1 grezzo) (S.drop 1 media)
+incrocia (viewl -> EmptyL) _ = empty
+incrocia _ (viewl -> EmptyL) = empty
+incrocia (viewl -> x :< (viewl -> EmptyL)) _ = empty
+incrocia _ (viewl -> y :< (viewl -> EmptyL)) = empty
+incrocia grezzo media 
+    | (x0 < y0) && (x1 > y1) = -x1 <| incrocia (S.drop 1 grezzo) (S.drop 1 media)
+    | (x0 > y0) && (x1 < y1) = x1  <| incrocia (S.drop 1 grezzo) (S.drop 1 media)
     | otherwise              = incrocia (S.drop 1 grezzo) (S.drop 1 media)
     where x0 = grezzo `index` 0
           x1 = grezzo `index` 1
           y0 = media `index` 0
           y1 = media `index` 1
-          
+
 -- Risultante rifatta
 risultante ampiezza lista = incrocia (S.drop (ampiezza - 1) lista) (ema ampiezza lista)
 
@@ -69,7 +71,7 @@ main = do
 -- Dati realtivi alla banca
 gain = 1 - 0.26
 commissione_fissa = 2.5
- 
+
 -- Dati di input!
 soldi = 10000
 numero_dati = S.length dati

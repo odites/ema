@@ -25,31 +25,27 @@ ema20 = ema 20
 ema50 = ema 50
 ema200 = ema 200
 
+ 
 
-
-incrocia (viewl -> EmptyL) _ = 1
-incrocia _ (viewl -> EmptyL) = 1
-incrocia (viewl -> x :< (viewl -> EmptyL)) _ = 1
-incrocia _ (viewl -> y :< (viewl -> EmptyL)) = 1
-incrocia grezzo media 
-    | (x0 < y0) && (x1 > y1) = incrocia (S.drop 1 grezzo) (S.drop 1 media) / x1
-    | (x0 > y0) && (x1 < y1) = incrocia (S.drop 1 grezzo) (S.drop 1 media) * x1
-    | otherwise              = incrocia (S.drop 1 grezzo) (S.drop 1 media)
-    where x0 = grezzo `index` 0
-          x1 = grezzo `index` 1
-          y0 = media `index` 0
-          y1 = media `index` 1
+incrocia (viewl -> EmptyL) _ = empty
+incrocia _ (viewl -> EmptyL) = empty
+incrocia (viewl -> x :< (viewl -> EmptyL)) _ = empty
+incrocia _ (viewl -> y :< (viewl -> EmptyL)) = empty
+incrocia (viewl -> x0 :< (viewl -> x1 :< xs)) (viewl -> y0 :< (viewl -> y1 :< ys)) 
+    | (x0 < y0) && (x1 > y1) = -x1 <| incrocia (x1 <| xs) (y1 <| ys)
+    | (x0 > y0) && (x1 < y1) = x1  <| incrocia (x1 <| xs) (y1 <| ys)
+    | otherwise              = incrocia (x1 <| xs) (y1 <| ys)
 
 -- Risultante rifatta
 risultante ampiezza lista = incrocia (S.drop (ampiezza - 1) lista) (ema ampiezza lista)
 
 -- Sarebbe da capire se fare finta di tenere le commissioni fisse o variabili
--- commissioni ampiezza lista = commissione_fissa * fromIntegral(length $ risultante ampiezza lista)
+commissioni ampiezza lista = commissione_fissa * fromIntegral(S.length $ risultante ampiezza lista)
 
-lordo ampiezza lista = risultante ampiezza lista
+lordo ampiezza lista = sum $ risultante ampiezza lista
 
 -- Vanno aggiunte le commissioni 
-netto volume ampiezza lista = (volume * (lordo ampiezza lista)  ) * gain
+netto volume ampiezza lista = (volume * (lordo ampiezza lista) - (commissioni ampiezza lista) ) * gain
 -- inverto l'ordine per usarlo con map
 netto' volume lista ampiezza = netto volume ampiezza lista
 

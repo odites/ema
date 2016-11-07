@@ -24,10 +24,17 @@ incrocia (x0:x1:xs) (y0:y1:ys)
     | otherwise = incrocia (x1:xs) (y1:ys)
 
 -- Toglie il positivo, ovvero non si può partire con una vendita
-pulitore [] = []
-pulitore (x:xs)
+pulisci_testa [] = []
+pulisci_testa (x:xs)
     | x > 0     = xs
     | otherwise = (x:xs)
+-- Toglie l'ultimo elemento negativo, ovvero non si finisce una lista con un acquisto
+pulisci_coda [] = []
+pulisci_coda lista
+    | x < 0     = init lista
+    | otherwise = lista
+    where x = last lista
+          
 -- Tupla che ha come primo valore il fattore moltiplicativo dell'investimento e come secondo la lunghezza, ovvero il numero delle operazioni
 moltiplicatore [] (y,z) = (0,0)
 moltiplicatore (x:[]) (y,z) = (y,z)
@@ -39,7 +46,7 @@ moltiplicatore (x:xs) (y,z)
 calcolatore volume (fattore,lunghezza) = (volume * fattore - commissione_fissa * fromIntegral(lunghezza)) * gain
 
 -- Lista contente l'icroncio tra l'ema e i dati reali
-risultante lista ampiezza = pulitore $ incrocia (drop (ampiezza - 1) lista) (ema lista ampiezza)
+risultante lista ampiezza = pulisci_testa $ pulisci_coda $ incrocia (drop (ampiezza - 1) lista) (ema lista ampiezza)
 
 -- Valore finale del calcolo del netto relativo ad una spefica ampiezza su cui calcolare la media mobile
 netto volume lista ampiezza = calcolatore volume (moltiplicatore (risultante lista ampiezza) (1,0))

@@ -45,11 +45,11 @@ risultante lista ampiezza = pulitore $ incrocia (drop (ampiezza - 1) lista) (ema
 netto volume lista ampiezza = calcolatore volume (moltiplicatore (risultante lista ampiezza) (1,0))
 
  
-tupla_massimale volume lista = maxi $ map (netto volume lista) [1..mole]
+tupla_massimale volume lista = maxi $ map (netto volume lista) [1..mole_dati]
 
  
 main = do
-    print $ mole
+    print $ mole_dati
     print $ tupla_massimale soldi dati
 
     
@@ -59,7 +59,7 @@ commissione_fissa = 2.5
 
 -- Dati di input!
 soldi = 10000
-mole = length dati
+mole_dati = length dati
 dati = 
         [0.4141
         ,0.4168

@@ -9,11 +9,11 @@ media x = sum x / (fromIntegral $ length x)
 corpo [] _ _ = []
 corpo (x:xs) y costante = valore : corpo xs valore costante
     where valore = x * costante + y * (1 - costante)    
-
+-- Versione con la costante 1/ampiezza , invece di 2 / (ampiezza + 1)
 ema lista ampiezza = testa : corpo sottostante testa costante
     where testa = media $ take ampiezza lista
           sottostante = drop ampiezza lista
-          costante = 2 / fromIntegral (ampiezza + 1)
+          costante = 1 / fromIntegral (ampiezza)
  
 -- Lista contente i vari acquisti in negativo, e vendite in positivo
 incrocia (x:[]) _ = []
